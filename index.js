@@ -17,8 +17,7 @@ mongoose.connect("mongodb://localhost:27017/testdb");
 
 // 테스트 데이터 생성
 async function createTestData(numAuthors, numBooks) {
-  await Author.deleteMany({});
-  await Book.deleteMany({});
+  await Promise.all([await Author.deleteMany({}), await Book.deleteMany({})]);
 
   const authors = [];
   for (let i = 0; i < numAuthors; i++) {
@@ -53,6 +52,8 @@ async function testPerformance() {
     `populate with ${smallTestSize} documents: ${populateSmallTime} ms`
   );
 
+  await Promise.all([await Author.deleteMany({}), await Book.deleteMany({})]);
+
   await createTestData(smallTestSize / 2, smallTestSize);
 
   console.log(`Testing aggregate with ${smallTestSize} documents...`);
@@ -85,6 +86,8 @@ async function testPerformance() {
   // Large test
   console.log(`Testing with ${largeTestSize} documents...`);
 
+  await Promise.all([await Author.deleteMany({}), await Book.deleteMany({})]);
+
   await createTestData(largeTestSize / 2, largeTestSize);
 
   console.log(`Testing populate with ${largeTestSize} documents...`);
@@ -95,6 +98,8 @@ async function testPerformance() {
   console.log(
     `populate with ${largeTestSize} documents: ${populateLargeTime} ms`
   );
+
+  await Promise.all([await Author.deleteMany({}), await Book.deleteMany({})]);
 
   await createTestData(largeTestSize / 2, largeTestSize);
 
@@ -124,6 +129,8 @@ async function testPerformance() {
   } else {
     console.log(`aggregate is faster for ${largeTestSize} documents.`);
   }
+
+  await Promise.all([await Author.deleteMany({}), await Book.deleteMany({})]);
 
   mongoose.connection.close();
 }
